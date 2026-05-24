@@ -1,357 +1,612 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IRLToolkit • Dashboard</title>
-    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAARElEQVR42mNkQAIsb7qYgYgBwre96mYgRAsDQEAsgInBAsgGoID9YAEwAIsBMA0wAIsBMA0wAIsBMA0wAIsBMA3wAIsB0A0An9idZ6Zbe9IAAAAASUVORK5CYII=">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAdCAYAAADLnm6HAAAA4ElEQVR4AWJwL/DBid8oAJotYyMKQSCINmFOBjREC/ZiOZbwa7AHOiDmX3wz8mS8Gww2EtkHtxykIqqibqIQL+1xbx7Sz8QUAMB8AYAMPER9JUB/oCaqoHkAGbSPVyClCTHLWA7vPADW/gRjWMizHWiD1W+uAFD/ysbfB/h8CSCE8s0fwP8YmjWiDk2ovQHYV7RiDXGuAYBLyR9ASX7IsBuOAJBqpaZlDdAG5sX0GEIWYML5RgQZSBvUNDsDxIvfB04AFDyXu2CiJR+uANSE7G9DCJ5ScQWA4NXF74GYrQH+7KDvLBBl4PAAAAAASUVORK5CYII=">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         body {
-            background-color: #1a1d20;
+            background-color: #343a40;
             color: #ffffff;
-            font-size: 14px;
-        }
-
-        /* GÓRNY PASEK NAWIGACJI */
-        .navbar {
-            background-color: #24282c;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #2d3238;
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: bold;
-            color: #ffffff;
-            text-decoration: none;
-        }
-
-        .brand-logo span {
-            background-color: #dc3545;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .nav-item {
-            color: #b9bbbe;
-            text-decoration: none;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            color: #ffffff;
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            padding: 0px 4px;
             font-size: 13px;
-            color: #b9bbbe;
+            user-select: none;
         }
 
-        .status-server {
-            color: #ffc107;
+        #scene-alert {
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #6c757d;
+            border: 1px solid #495057;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            z-index: 9999;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: none;
+        }
+
+        #scene-alert .alert-title {
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #adb5bd;
+            margin-bottom: 2px;
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
-        .logout-link {
-            color: #dc3545;
-            text-decoration: none;
-        }
-
-        /* GŁÓWNY UKŁAD GRID */
-        .dashboard-container {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 20px;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        .panel {
-            background-color: #24282c;
-            border-radius: 6px;
-            border: 1px solid #2d3238;
-            padding: 15px;
-        }
-
-        .col-4 { grid-column: span 4; }
-        .col-5 { grid-column: span 5; }
-        .col-7 { grid-column: span 7; }
-
-        .panel-title {
-            font-size: 13px;
-            color: #b9bbbe;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* PRZYCISKI I KONTROLKI */
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            font-size: 15px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .btn-start { background-color: #2ca045; }
-        .btn-stop { background-color: #dc3545; }
-
-        .btn-mute { background-color: #007bff; }
-        .btn-fix { background-color: #ffc107; color: #000; }
-
-        .ingest-row {
-            margin-bottom: 15px;
-        }
-        .ingest-header {
+        header {
+            background-color: #212529;
+            padding: 10px 16px;
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
-            color: #b9bbbe;
-            margin-bottom: 4px;
+            align-items: center;
         }
-        .ingest-status { color: #dc3545; font-weight: bold; }
-        .ingest-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr 60px;
-            gap: 6px;
-        }
-        .ingest-actions .btn { padding: 8px; font-size: 13px; }
 
-        /* SCENY */
-        .scene-list {
+        .brand-section {
             display: flex;
-            flex-direction: column;
-            gap: 6px;
+            align-items: center;
         }
-        .scene-btn {
-            background-color: #1a1d20;
-            color: #ffffff;
-            border: 1px solid #2d3238;
-            padding: 10px;
-            text-align: left;
-            border-radius: 4px;
-            cursor: pointer;
+
+        .nav-logo-img {
+            height: 18px;
+            margin-right: 8px;
+            display: block;
+        }
+
+        .brand-name {
+            color: #adb5bd;
+            font-size: 14px;
+            margin-right: 20px;
+            font-weight: 400;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        nav a {
+            color: #adb5bd;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        nav a.active {
+            color: #fff;
+        }
+
+        .nav-right {
+            color: #adb5bd;
             font-size: 13px;
         }
-        .scene-btn.active {
-            background-color: #2ca045;
-            border-color: #2ca045;
+        .nav-right span.logout {
+            color: #dc3545;
+            cursor: pointer;
         }
 
-        /* PODGLĄD WIDEO */
-        .video-preview {
-            background-color: #1a1d20;
-            aspect-ratio: 16/9;
+        .row-top {
             display: flex;
-            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 12px;
+            margin-top: 8px;
+        }
+
+        .col-3 {
+            flex: 1;
+            background-color: #495057;
+            border: 1px solid #555c64;
+            border-radius: 4px;
+            padding: 12px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 12px;
+            padding-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .badge-offline {
+            background-color: #dc3545;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .badge-scene {
+            background-color: #28a745;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .btn-start {
+            width: 100%;
+            background-color: #28a745;
+            border: 1px solid #28a745;
+            color: white;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
             align-items: center;
             justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-stop {
+            width: 100%;
+            background-color: #dc3545;
+            border: 1px solid #dc3545;
+            color: white;
+            padding: 10px;
+            font-size: 14px;
             border-radius: 4px;
-            border: 1px solid #2d3238;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        .preview-logo {
-            font-size: 48px;
-            font-weight: bold;
-            color: #dc3545;
-            margin-bottom: 10px;
+        .ingest-item {
+            margin-bottom: 12px;
+        }
+        .ingest-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .ingest-meta .name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ingest-buttons {
+            display: flex;
+            width: 100%;
+        }
+        
+        .btn-blue {
+            flex: 2;
+            background-color: #007bff;
+            border: 1px solid #007bff;
+            color: white;
+            padding: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .btn-blue:first-child {
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            border-right: 1px solid #0069d9;
+        }
+        .btn-blue:nth-child(2) {
+            border-right: 1px solid #0069d9;
+        }
+        
+        .btn-blue.audio-active {
+            background-color: #004085;
+            border-color: #003875;
+            box-shadow: inset 0 3px 5px rgba(0,0,0,0.4);
         }
 
-        .preview-text {
-            color: #b9bbbe;
-            font-size: 20px;
-            font-weight: bold;
+        .btn-fix {
+            flex: 1.2;
+            background-color: #ffc107;
+            border: 1px solid #ffc107;
+            color: #212529;
+            padding: 6px;
+            font-size: 13px;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-weight: 500;
         }
 
-        /* WYKRES STRUMIENIA */
-        .chart-placeholder {
-            background-color: #1a1d20;
-            height: 100%;
-            min-height: 250px;
-            border: 1px solid #2d3238;
+        .btn-scene {
+            width: 100%;
+            background-color: #007bff;
+            border: 1px solid #007bff;
+            color: white;
+            padding: 8px 12px;
+            margin-bottom: 6px;
             border-radius: 4px;
-            position: relative;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-scene.active {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .row-bottom {
+            display: flex;
+            gap: 12px;
+        }
+
+        .col-half {
+            flex: 1;
+            background-color: #495057;
+            border: 1px solid #555c64;
+            border-radius: 4px;
             padding: 10px;
         }
 
-        .chart-line {
+        .box-title {
+            font-size: 12px;
+            color: #adb5bd;
+            margin-bottom: 8px;
+        }
+
+        .preview-screen {
+            background-color: #6c757d;
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+        }
+
+        .preview-logo-img {
+            height: 110px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .huge-text {
+            font-size: 46px;
+            color: #1c1e22;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .chart-screen {
+            background-color: #6c757d;
+            height: 420px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .chart-y-line {
             position: absolute;
-            bottom: 40px;
+            width: 100%;
+            height: 1px;
+            border-top: 1px solid #5a6268;
+            padding-left: 6px;
+            color: #212529;
+            font-size: 11px;
+            padding-top: 2px;
+        }
+
+        .line-red {
+            position: absolute;
+            bottom: 65px;
             left: 0;
             width: 100%;
-            border-bottom: 2px solid #dc3545;
+            height: 1px;
+            background-color: #dc3545;
         }
-        .chart-label {
+
+        .label-offline {
             position: absolute;
-            bottom: 45px;
+            bottom: 58px;
             left: 50%;
             transform: translateX(-50%);
             background-color: #dc3545;
-            padding: 2px 6px;
+            color: white;
+            font-size: 10px;
+            padding: 1px 5px;
             border-radius: 3px;
-            font-size: 11px;
             font-weight: bold;
         }
 
-        /* DOLNY STATUS BAR */
-        .statusbar {
-            background-color: #1a1d20;
-            position: fixed;
-            bottom: 0;
+        .axis-x {
+            position: absolute;
+            bottom: 4px;
             width: 100%;
-            padding: 6px 20px;
+            height: 10px;
             display: flex;
-            gap: 15px;
-            font-size: 12px;
-            border-top: 1px solid #2d3238;
+            justify-content: space-between;
+            padding: 0 15px;
+        }
+        .axis-x::after {
+            content: "••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••";
+            color: #fff;
+            letter-spacing: 11px;
+            font-size: 14px;
+            opacity: 0.6;
         }
 
-        .status-badge {
+        .footer-bar {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding-bottom: 15px;
+        }
+        .footer-badge {
             background-color: #dc3545;
-            padding: 2px 6px;
-            border-radius: 3px;
+            color: white;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 4px;
             font-weight: bold;
+        }
+
+        /* RESPONSYWNOŚĆ (MEDIA QUERIES) DLA TELEFONÓW */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+                padding: 12px;
+            }
+
+            .brand-section {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .brand-name {
+                margin-right: 0;
+            }
+
+            .nav-right {
+                font-size: 12px;
+                line-height: 1.6;
+            }
+
+            .row-top, .row-bottom {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .col-3, .col-half {
+                width: 100%;
+            }
+
+            .preview-screen, .chart-screen {
+                height: 280px; /* Zmniejszona wysokość podglądów na telefonie, żeby nie przewijać w nieskończoność */
+            }
+
+            .preview-logo-img {
+                height: 70px;
+                margin-bottom: 10px;
+            }
+
+            .huge-text {
+                font-size: 24px;
+            }
+
+            .footer-bar {
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="nav-left">
-            <a href="#" class="brand-logo"><span>IRL</span> Kubson</a>
-            <div class="nav-links">
-                <a href="#" class="nav-item active">Dashboard</a>
-                <a href="#" class="nav-item">OBS</a>
-                <div style="display:inline-block; position:relative;">
-                    <a href="#" class="nav-item">Settings ▾</a>
-                </div>
-                <a href="https://kubsoneczek.github.io/irltoolkit/belabox.html" class="nav-item" style="color: #2ca045; font-weight: bold; border-left: 1px solid #2d3238; padding-left: 15px;">BELABOX</a>
-            </div>
+    <div id="scene-alert">
+        <div class="alert-title"><i class="fa-solid fa-circle-info"></i> System</div>
+        <div id="alert-text">Notification</div>
+    </div>
+
+    <header>
+        <div class="brand-section">
+            <img class="nav-logo-img" src="https://cdn.irltoolkit.com/image/navbar_logo.png" alt="IRL Logo">
+            <div class="brand-name">KubaYTT</div>
+            <nav>
+                <a href="#" class="active">Dashboard</a>
+                <a href="#">OBS</a>
+                <a href="#">Settings ▾</a>
+                <a href="https://kubsoneczek.github.io/irltoolkit/belabox.html" style="color: #28a745; font-weight: bold;">BELABOX</a>
+            </nav>
         </div>
         <div class="nav-right">
-            <span>No destination set</span>
-            <span>Language ▾</span>
-            <div class="status-server">⚠️ Shutdown server</div>
-            <a href="#" class="logout-link">Logout</a>
+            No destination set &nbsp;&nbsp; Language ▾ &nbsp;&nbsp; <span style="color:#ffc107;"><i class="fa-solid fa-circle-exclamation"></i></span> <span style="color:#ffffff;">Shutdown server</span> &nbsp;&nbsp; <span class="logout">Logout</span>
         </div>
-    </nav>
+    </header>
 
-    <div class="dashboard-container">
+    <div class="row-top">
         
-        <div class="panel col-4">
-            <div class="panel-title">Stream ▾</div>
-            <div class="btn-group">
-                <button class="btn btn-start">🎥 Start</button>
-                <button class="btn btn-stop">🛑 Stop</button>
+        <div class="col-3">
+            <div class="panel-header">
+                <span>Stream ▾</span>
+                <span class="badge-offline" id="stream-status-badge">Offline</span>
             </div>
+            <button class="btn-start" onclick="triggerAlert('Stream started', 'Live', '#28a745')">
+                <i class="fa-solid fa-video"></i> Start
+            </button>
+            <button class="btn-stop" onclick="triggerAlert('Stream stopped', 'Offline', '#dc3545')">
+                <i class="fa-solid fa-video-slash"></i> Stop
+            </button>
         </div>
 
-        <div class="panel col-4">
-            <div class="panel-title">Ingest ▾</div>
+        <div class="col-3">
+            <div class="panel-header">
+                <span>Ingest ▾</span>
+                <span></span>
+            </div>
             
-            <div class="ingest-row">
-                <div class="ingest-header">
-                    <span>Main Ingest</span>
-                    <span class="ingest-status">Offline</span>
+            <div class="ingest-item" id="ingest-1">
+                <div class="ingest-meta">
+                    <span class="name" style="color: #28a745;"><i class="fa-solid fa-child-holding-hands"></i> Main Ingest</span>
+                    <span class="badge-offline status-txt" style="background:none; color:#dc3545; padding:0;">Offline</span>
                 </div>
-                <div class="ingest-actions">
-                    <button class="btn btn-mute">🎙️ Mute</button>
-                    <button class="btn btn-mute">🔊 Unmute</button>
-                    <button class="btn btn-fix">🔧 Fix</button>
+                <div class="ingest-buttons">
+                    <button class="btn-blue btn-mute" onclick="toggleAudio(1, 'mute')"><i class="fa-solid fa-microphone-slash"></i> Mute</button>
+                    <button class="btn-blue btn-unmute" onclick="toggleAudio(1, 'unmute')"><i class="fa-solid fa-microphone"></i> Unmute</button>
+                    <button class="btn-fix"><i class="fa-solid fa-wrench"></i> Fix</button>
                 </div>
             </div>
 
-            <div class="ingest-row">
-                <div class="ingest-header">
-                    <span>Second Ingest</span>
-                    <span class="ingest-status">Offline</span>
+            <div class="ingest-item" id="ingest-2">
+                <div class="ingest-meta">
+                    <span class="name" style="color: #28a745;"><i class="fa-solid fa-child-holding-hands"></i> Second Ingest</span>
+                    <span class="badge-offline status-txt" style="background:none; color:#dc3545; padding:0;">Offline</span>
                 </div>
-                <div class="ingest-actions">
-                    <button class="btn btn-mute">🎙️ Mute</button>
-                    <button class="btn btn-mute">🔊 Unmute</button>
-                    <button class="btn btn-fix">🔧 Fix</button>
+                <div class="ingest-buttons">
+                    <button class="btn-blue btn-mute" onclick="toggleAudio(2, 'mute')"><i class="fa-solid fa-microphone-slash"></i> Mute</button>
+                    <button class="btn-blue btn-unmute" onclick="toggleAudio(2, 'unmute')"><i class="fa-solid fa-microphone"></i> Unmute</button>
+                    <button class="btn-fix"><i class="fa-solid fa-wrench"></i> Fix</button>
                 </div>
-            </div>
-        </div>
-
-        <div class="panel col-4">
-            <div class="panel-title">Scene ▾</div>
-            <div class="scene-list">
-                <button class="scene-btn">🖼️ Starting Soon</button>
-                <button class="scene-btn">🖼️ BRB</button>
-                <button class="scene-btn">☁️ Ingest</button>
-                <button class="scene-btn">📉 Ingest Low-bitrate</button>
-                <button class="scene-btn">✔️ Ingest Offline</button>
-                <button class="scene-btn active">🟢 Second Ingest</button>
             </div>
         </div>
 
-        <div class="panel col-5">
-            <div class="panel-title">Ingest Preview real-time ▾</div>
-            <div class="video-preview">
-                <div class="preview-logo">IRL</div>
-                <div class="preview-text">Ingest Currently Offline</div>
+        <div class="col-3">
+            <div class="panel-header">
+                <span>Scene ▾</span>
+                <span class="badge-scene" id="current-scene-badge">Second Ingest</span>
+            </div>
+            <button class="btn-scene" onclick="changeScene(this, 'Starting Soon')"><i class="fa-regular fa-image"></i> Starting Soon</button>
+            <button class="btn-scene" onclick="changeScene(this, 'BRB')"><i class="fa-regular fa-image"></i> BRB</button>
+            <button class="btn-scene" onclick="changeScene(this, 'Ingest')"><i class="fa-solid fa-cloud"></i> Ingest</button>
+            <button class="btn-scene" onclick="changeScene(this, 'Ingest Low-bitrate')"><i class="fa-solid fa-robot"></i> Ingest Low-bitrate</button>
+            <button class="btn-scene" onclick="changeScene(this, 'Ingest Offline')"><i class="fa-solid fa-check"></i> Ingest Offline</button>
+            <button class="btn-scene active" onclick="changeScene(this, 'Second Ingest')"><i class="fa-regular fa-image"></i> Second Ingest</button>
+        </div>
+
+    </div>
+
+    <div class="row-bottom">
+        
+        <div class="col-half">
+            <div class="box-title">Ingest Preview real-time ▾</div>
+            <div class="preview-screen">
+                <img class="preview-logo-img" src="https://cdn.irltoolkit.com/image/navbar_logo.png" alt="IRL Logo Preview">
+                <div class="huge-text">Ingest Currently Offline</div>
             </div>
         </div>
 
-        <div class="panel col-7">
-            <div class="panel-title">Ingest Bitrate past 60 sec ▾</div>
-            <div class="chart-placeholder">
-                <div class="chart-line"></div>
-                <div class="chart-label">Offline</div>
+        <div class="col-half">
+            <div class="box-title">Ingest Bitrate past 60 sec ▾</div>
+            <div class="chart-screen">
+                <div class="chart-y-line" style="top: 30px;">1,200</div>
+                <div class="chart-y-line" style="top: 115px;">900</div>
+                <div class="chart-y-line" style="top: 200px;">600</div>
+                <div class="chart-y-line" style="top: 285px;">300</div>
+                <div class="chart-y-line" style="bottom: 25px; border-top: 1px solid #444;">0</div>
+                
+                <div class="line-red"></div>
+                <div class="label-offline">Offline</div>
+                <div class="axis-x"></div>
             </div>
         </div>
 
     </div>
 
-    <div class="statusbar">
-        <div><span class="status-badge">Stream Offline</span></div>
-        <div><span class="status-badge">Main Ingest Offline</span></div>
+    <div class="footer-bar">
+        <div class="footer-badge">Stream Offline</div>
+        <div class="footer-badge">Main Ingest Offline</div>
     </div>
+
+    <script>
+        let alertTimeout;
+
+        function triggerAlert(msg, badgeText, badgeColor) {
+            const alertBox = document.getElementById('scene-alert');
+            const alertText = document.getElementById('alert-text');
+            
+            alertText.innerText = msg;
+            alertBox.style.display = 'block';
+
+            if(badgeText && badgeColor) {
+                const streamBadge = document.getElementById('stream-status-badge');
+                streamBadge.innerText = badgeText;
+                streamBadge.style.backgroundColor = badgeColor;
+            }
+
+            clearTimeout(alertTimeout);
+            alertTimeout = setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 3000);
+        }
+
+        function changeScene(clickedButton, sceneName) {
+            const buttons = document.querySelectorAll('.btn-scene');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            clickedButton.classList.add('active');
+            document.getElementById('current-scene-badge').innerText = sceneName;
+
+            triggerAlert('Scene changed to ' + sceneName);
+        }
+
+        function toggleAudio(ingestId, type) {
+            const container = document.getElementById('ingest-' + ingestId);
+            const muteBtn = container.querySelector('.btn-mute');
+            const unmuteBtn = container.querySelector('.btn-unmute');
+            const statusText = container.querySelector('.status-txt');
+
+            if (type === 'mute') {
+                if (muteBtn.classList.contains('audio-active')) {
+                    muteBtn.classList.remove('audio-active');
+                    statusText.innerText = 'Offline';
+                    statusText.style.color = '#dc3545';
+                } else {
+                    muteBtn.classList.add('audio-active');
+                    unmuteBtn.classList.remove('audio-active');
+                    statusText.innerText = 'Muted';
+                    statusText.style.color = '#ffc107';
+                }
+            } else if (type === 'unmute') {
+                if (unmuteBtn.classList.contains('audio-active')) {
+                    unmuteBtn.classList.remove('audio-active');
+                    statusText.innerText = 'Offline';
+                    statusText.style.color = '#dc3545';
+                } else {
+                    unmuteBtn.classList.add('audio-active');
+                    muteBtn.classList.remove('audio-active');
+                    statusText.innerText = 'Active';
+                    statusText.style.color = '#28a745';
+                }
+            }
+        }
+    </script>
 
 </body>
 </html>
