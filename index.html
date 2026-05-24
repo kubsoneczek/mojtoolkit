@@ -374,6 +374,58 @@
             border-radius: 4px;
             font-weight: bold;
         }
+
+        /* RESPONSYWNOŚĆ (MEDIA QUERIES) DLA TELEFONÓW */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+                padding: 12px;
+            }
+
+            .brand-section {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .brand-name {
+                margin-right: 0;
+            }
+
+            .nav-right {
+                font-size: 12px;
+                line-height: 1.6;
+            }
+
+            .row-top, .row-bottom {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .col-3, .col-half {
+                width: 100%;
+            }
+
+            .preview-screen, .chart-screen {
+                height: 280px; /* Zmniejszona wysokość podglądów na telefonie, żeby nie przewijać w nieskończoność */
+            }
+
+            .preview-logo-img {
+                height: 70px;
+                margin-bottom: 10px;
+            }
+
+            .huge-text {
+                font-size: 24px;
+            }
+
+            .footer-bar {
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -386,7 +438,7 @@
     <header>
         <div class="brand-section">
             <img class="nav-logo-img" src="https://cdn.irltoolkit.com/image/navbar_logo.png" alt="IRL Logo">
-            <div class="brand-name">KubaYTT</div>
+            <div class="brand-name">Kubson</div>
             <nav>
                 <a href="#" class="active">Dashboard</a>
                 <a href="#">OBS</a>
