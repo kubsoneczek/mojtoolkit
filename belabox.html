@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BELABOX cloud</title>
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAn0lEQVR42mNkQAIsb7qYgYgBwre96mYgRAsDQEAsgInBAsgGoID9YAEwAIsBMA0wAIsBMA0wAIsBMA0wAIsBMA3wAIsB0A3AgF8G/PZpYIDwG97wM8AAsgGoAJ95GvD6lscwE6gBWAzAmwAsBmDDAfEmwMcAhgE7XnZjWIDUv/p2pBkw96wXw8K219wM+G3ADUfEGwCO/L6WvPbyGgMAmFidZ92VvGAAAAAElFTkSuQmCC">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #15191c;
+            color: #ffffff;
+            padding: 20px 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .belabox-wrapper {
+            width: 100%;
+            max-width: 650px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* GŁÓWNY PRZYCISK START */
+        .btn-main-start {
+            width: 100%;
+            background-color: #2ca045;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: normal;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* SEKCOJA INPUTU I SUWAKA BITRATE */
+        .bitrate-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .bitrate-input {
+            width: 100%;
+            background-color: #e9ecef;
+            color: #495057;
+            border: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .bitrate-slider {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 3px;
+            outline: none;
+            margin: 6px 0;
+        }
+
+        .bitrate-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            border: 1px solid #666;
+        }
+
+        /* SEKCJE TABEL (PORTY I SENSORY) */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            color: #ffffff;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .data-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #2d3238;
+            vertical-align: middle;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+
+        .checkbox-cell {
+            width: 30px;
+        }
+
+        .checkbox-cell input {
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        /* PODSUMOWANIE BITRATE */
+        .total-summary {
+            text-align: right;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 6px 8px;
+            border-bottom: 1px solid #ffffff;
+            margin-bottom: 5px;
+        }
+
+        /* ZIELONE PRZYCISKI MENU */
+        .menu-block-btn {
+            width: 100%;
+            background-color: #2ca045;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 13px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* DOLNE DROPDOWNY OPCJI */
+        .bottom-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #ffffff;
+            flex-wrap: wrap;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: bold;
+        }
+
+        .bottom-options select {
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 2px 4px;
+            font-size: 12px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="belabox-wrapper">
+
+        <button class="btn-main-start" id="startBtn">Start</button>
+
+        <div class="bitrate-container">
+            <input type="text" id="bitrateDisplay" class="bitrate-input" value="Max bitrate: 8000 Kbps" readonly>
+            <input type="range" class="bitrate-slider" min="500" max="15000" step="250" value="8000" id="bitrateSlider">
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th class="checkbox-cell"></th>
+                    <th>Port</th>
+                    <th>IP</th>
+                    <th class="text-right">Bitrate</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="checkbox-cell text-center"><input type="checkbox" id="portCheckbox" checked></td>
+                    <td>wlan1</td>
+                    <td>192.168.0.42</td>
+                    <td class="text-right" id="portBitrate">0 Kbps</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total-summary" id="totalBitrate">0 Kbps</div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Sensor</th>
+                    <th class="text-right">Measurement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>SoC temperature</td>
+                    <td class="text-right" id="socTemp">37.9 °C</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="menu-block-btn">Wifi: wlan0 (TP-Link 802.11ac NIC)</button>
+        <button class="menu-block-btn">Wifi: wlan1 (Realtek Semiconductor Co., Ltd.)</button>
+        <button class="menu-block-btn">Wifi: wlan2 (Realtek Semiconductor Co., Ltd.)</button>
+        <button class="menu-block-btn">Encoder settings</button>
+        <button class="menu-block-btn">Relay server settings</button>
+        <button class="menu-block-btn">Advanced / developer</button>
+        <button class="menu-block-btn">System</button>
+
+        <div class="bottom-options">
+            <div class="option-group">
+                <label>Theme:</label>
+                <select>
+                    <option>Auto</option>
+                    <option>Dark</option>
+                    <option>Light</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label>Slider locks:</label>
+                <select>
+                    <option>Off</option>
+                    <option>On</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label>Layout:</label>
+                <select>
+                    <option>standard</option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Aktualizacja tekstu z suwaka
+        const slider = document.getElementById('bitrateSlider');
+        const display = document.getElementById('bitrateDisplay');
+
+        slider.addEventListener('input', function() {
+            display.value = 'Max bitrate: ' + this.value + ' Kbps';
+        });
+
+        // Obsługa przycisku start/stop
+        const startBtn = document.getElementById('startBtn');
+        let isLive = false;
+
+        startBtn.addEventListener('click', function() {
+            isLive = !isLive;
+            if(isLive) {
+                startBtn.innerText = 'Stop';
+                startBtn.style.backgroundColor = '#dc3545';
+            } else {
+                startBtn.innerText = 'Start';
+                startBtn.style.backgroundColor = '#2ca045';
+            }
+            updateBitrate();
+        });
+
+        // Obsługa checkboxa w tabeli
+        const checkbox = document.getElementById('portCheckbox');
+        checkbox.addEventListener('change', updateBitrate);
+
+        function updateBitrate() {
+            const portBitrate = document.getElementById('portBitrate');
+            const totalBitrate = document.getElementById('totalBitrate');
+            
+            // Kiedy jest LIVE i port jest ZAZNACZONY, dajemy startowy wysoki bitrate wokół 8000
+            if(isLive && checkbox.checked) {
+                const baseLiveBitrate = Math.floor(Math.random() * (8200 - 7800 + 1)) + 7800;
+                portBitrate.innerText = baseLiveBitrate + ' Kbps';
+                totalBitrate.innerText = baseLiveBitrate + ' Kbps';
+            } else {
+                // Gdy wyłączony lub odznaczony, bezwzględnie 0
+                portBitrate.innerText = '0 Kbps';
+                totalBitrate.innerText = '0 Kbps';
+            }
+        }
+
+        // --- AUTOMATYCZNA SYMULACJA RUCHU NA ŻYWO (SKAKANIE NA POZIOMIE 8K) ---
+
+        // 1. Dynamiczne falowanie Bitrate wokół 8000 Kbps (tylko w trybie Live)
+        setInterval(function() {
+            if (isLive && checkbox.checked) {
+                const portBitrate = document.getElementById('portBitrate');
+                const totalBitrate = document.getElementById('totalBitrate');
+                
+                // Losuj skoki o +/- 250 Kbps wokół stabilnego punktu 8000 Kbps
+                const liveChange = Math.floor(Math.random() * 501) - 250; 
+                const currentBitrate = 8000 + liveChange;
+
+                portBitrate.innerText = currentBitrate + ' Kbps';
+                totalBitrate.innerText = currentBitrate + ' Kbps';
+            }
+        }, 1000);
+
+        // 2. Skoki temperatury procesora SoC (co 2 sekundy)
+        let baseTemp = 37.9;
+        setInterval(function() {
+            const tempChange = (Math.random() * 0.6) - 0.3;
+            baseTemp += tempChange;
+
+            if (baseTemp < 36.5) baseTemp = 36.5;
+            if (baseTemp > 39.5) baseTemp = 39.5;
+
+            document.getElementById('socTemp').innerText = baseTemp.toFixed(1) + ' °C';
+        }, 2000);
+    </script>
+
+</body>
+</html>
